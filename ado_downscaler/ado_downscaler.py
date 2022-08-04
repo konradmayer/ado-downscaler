@@ -274,7 +274,10 @@ class Downscaler(object):
         var_key = list(xds)[0]
 
         xds = xds.stack({"time_new":xds.valid_time.dims})
-        xds["time_new"] = xds.valid_time
+        # xds["time_new"] = xds.valid_time
+        xds = xds.assign_coords({"time_new": xds.valid_time})
+        xds = xds.reset_index("time")
+        xds = xds.drop(["time", "valid_time", "step", "surface"], errors = "ignore")
         xds = xds.rename({"latitude":"lat", "longitude":"lon", "time_new":"time"})
 
         if "tp" in var_key:
